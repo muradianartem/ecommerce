@@ -18,8 +18,8 @@ const App = () => {
       <Header />
       <Switch>
         <Route exact path="/categories" component={Categories} />
-        <Route exact path="/category/:categoryId" component={ListItems} />
-        <Route exact path="/category/:categoryId/product/:productId" component={Product} />
+        <Route exact path="/categories/:categoryId" component={ListItems} />
+        <Route exact path="/categories/:categoryId/product/:productId" component={Product} />
         <Route exact path="/contacts" component={Contact} />
         <Redirect to="/categories" />
       </Switch>

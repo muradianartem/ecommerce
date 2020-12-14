@@ -15,11 +15,12 @@ interface CategoryProps extends WithStyles<typeof styles> {
   title: string;
   content: string;
   fileName: string;
-  link: string;
+  link?: string;
+  withLink?: boolean;
   withlocation?: boolean;
 }
 
-const Category: React.FC<CategoryProps> = ({ title, content, classes, fileName, id, link, withlocation }) => {
+const Category: React.FC<CategoryProps> = ({ title, content, classes, fileName, id, link, withLink, withlocation }) => {
   const history = useHistory();
   const location = useLocation();
   const [img, setImg] = React.useState('');
@@ -27,19 +28,19 @@ const Category: React.FC<CategoryProps> = ({ title, content, classes, fileName, 
   const getImage = async () => {
     const img = await axios.get(`http://localhost:3001/image/${fileName}`, {responseType: 'arraybuffer'}).then((data) => {
       const b64Data = btoa(
-          new Uint8Array(data.data).reduce(
-              (dataArray, byte) => {
-                  return dataArray + String.fromCharCode(byte);
-              }, 
-              ''
-          )
+        new Uint8Array(data.data).reduce(
+          (dataArray, byte) => {
+            return dataArray + String.fromCharCode(byte);
+          }, 
+          ''
+        )
       );
       const userAvatarData = {
           key: 'userAvatar',
           value: `data:image/png;base64,${b64Data}`
       };
       return userAvatarData.value; // here we return the base64 image data to our component
-  });
+    });
 
     setImg(img);
   }
@@ -55,7 +56,7 @@ const Category: React.FC<CategoryProps> = ({ title, content, classes, fileName, 
   };
 
   return (
-    <MuiCard raised className={classes.root} onClick={handleChooseCategory}>
+    <MuiCard raised className={classes.root} onClick={withLink ? handleChooseCategory : null}>
       <MuiCardHeader title={title} />
       <MuiCardMedia className={classes.media} image={img} title={title} />
       <MuiCardContent>
