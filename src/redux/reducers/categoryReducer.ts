@@ -1,17 +1,10 @@
-import {
-  GET_CATEGORIES,
-  GetCategoriesStateType,
-  CategoryActionTypes
-} from '../types/category';
+import { GET_CATEGORIES, GetCategoriesStateType, CategoryActionTypes } from "../types/category";
 
 const initialStateGetCategories: GetCategoriesStateType = {
   categories: []
 };
 
-export const getCategoriesReducer = (
-  state = initialStateGetCategories,
-  action: CategoryActionTypes
-): GetCategoriesStateType => {
+export const getCategoriesReducer = (state = initialStateGetCategories, action: CategoryActionTypes): GetCategoriesStateType => {
   switch (action.type) {
     case GET_CATEGORIES:
       return {

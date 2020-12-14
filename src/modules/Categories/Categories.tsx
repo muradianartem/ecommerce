@@ -16,7 +16,7 @@ const Categories: React.FC<CategoriesProps> = () => {
     const list = await axios.get("http://localhost:3001/categories");
 
     setList(list.data);
-  }
+  };
 
   React.useEffect(() => {
     getCategories();
@@ -25,7 +25,9 @@ const Categories: React.FC<CategoriesProps> = () => {
   return (
     <Flex>
       {list &&
-        list.map(({ id, title, content, fileName }) => <Category withLink key={id} id={id} title={title} content={content} fileName={fileName} link="categories" />)}
+        list.map(({ id, title, content, fileName }) => (
+          <Category withLink key={id} id={id} title={title} content={content} fileName={fileName} link="categories" />
+        ))}
     </Flex>
   );
 };

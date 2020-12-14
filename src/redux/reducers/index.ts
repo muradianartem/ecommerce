@@ -1,5 +1,5 @@
-import { combineReducers } from 'redux';
-import { getCategoriesReducer } from './categoryReducer';
+import { combineReducers } from "redux";
+import { getCategoriesReducer } from "./categoryReducer";
 
 const rootReducer = combineReducers({
   posts: getCategoriesReducer
