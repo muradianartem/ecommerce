@@ -1,40 +1,105 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace Services.Helpers
 {
-    public class PasswordHasher
+    public static class PasswordHasher
     {
-        public static string EncodePasswordToBase64(string password)
+        private static byte Version => 1;
+        private static int SaltSize { get; } = 128 / 8; // 128 bits
+        private static HashAlgorithmName HashAlgorithmName { get; } = HashAlgorithmName.SHA256;
+
+        public static string HashPassword(string password)
         {
-            try
+            if (password == null)
+                throw new ArgumentNullException(nameof(password));
+
+            // The salt must be unique for each password
+            byte[] salt = GenerateSalt(SaltSize);
+            byte[] hash = HashPasswordWithSalt(password, salt);
+
+            var inArray = new byte[1 + SaltSize + hash.Length];
+            inArray[0] = Version;
+            Buffer.BlockCopy(salt, 0, inArray, 1, SaltSize);
+            Buffer.BlockCopy(hash, 0, inArray, 1 + SaltSize, hash.Length);
+
+            return Convert.ToBase64String(inArray);
+        }
+
+        public static PasswordVerificationResult VerifyHashedPassword(string hashedPassword, string password)
+        {
+            if (password == null)
+                throw new ArgumentNullException(nameof(password));
+
+            if (hashedPassword == null)
+                return PasswordVerificationResult.Failed;
+
+            Span<byte> numArray = Convert.FromBase64String(hashedPassword);
+            if (numArray.Length < 1)
+                return PasswordVerificationResult.Failed;
+
+            byte version = numArray[0];
+            if (version > Version)
+                return PasswordVerificationResult.Failed;
+
+            var salt = numArray.Slice(1, SaltSize).ToArray();
+            var bytes = numArray.Slice(1 + SaltSize).ToArray();
+
+            var hash = HashPasswordWithSalt(password, salt);
+
+            if (FixedTimeEquals(hash, bytes))
+                return PasswordVerificationResult.Success;
+
+            return PasswordVerificationResult.Failed;
+        }
+
+        private static byte[] HashPasswordWithSalt(string password, byte[] salt)
+        {
+            byte[] hash;
+            using (var hashAlgorithm = HashAlgorithm.Create(HashAlgorithmName.Name))
             {
-                byte[] encData_byte = new byte[password.Length];
-                encData_byte = System.Text.Encoding.UTF8.GetBytes(password);
-                string encodedData = Convert.ToBase64String(encData_byte);
-                return encodedData;
+                byte[] input = Encoding.UTF8.GetBytes(password);
+                hashAlgorithm.TransformBlock(salt, 0, salt.Length, salt, 0);
+                hashAlgorithm.TransformFinalBlock(input, 0, input.Length);
+                hash = hashAlgorithm.Hash;
             }
-            catch (Exception ex)
+
+            return hash;
+        }
+
+        private static byte[] GenerateSalt(int byteLength)
+        {
+            using (var cryptoServiceProvider = new RNGCryptoServiceProvider())
             {
-                throw new Exception("Error in base64Encode" + ex.Message);
+                var data = new byte[byteLength];
+                cryptoServiceProvider.GetBytes(data);
+                return data;
             }
         }
 
-        public static string DecodeFrom64(string encodedData)
+        // In .NET Core 2.1, you can use CryptographicOperations.FixedTimeEquals
+        // https://github.com/dotnet/runtime/blob/419e949d258ecee4c40a460fb09c66d974229623/src/libraries/System.Security.Cryptography.Primitives/src/System/Security/Cryptography/CryptographicOperations.cs#L32
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        public static bool FixedTimeEquals(byte[] left, byte[] right)
         {
-            System.Text.UTF8Encoding encoder = new System.Text.UTF8Encoding();
-            System.Text.Decoder utf8Decode = encoder.GetDecoder();
-            byte[] todecode_byte = Convert.FromBase64String(encodedData);
-            int charCount = utf8Decode.GetCharCount(todecode_byte, 0, todecode_byte.Length);
-            char[] decoded_char = new char[charCount];
-            utf8Decode.GetChars(todecode_byte, 0, todecode_byte.Length, decoded_char, 0);
-            string result = new String(decoded_char);
-            return result;
-        }
+            // NoOptimization because we want this method to be exactly as non-short-circuiting as written.
+            // NoInlining because the NoOptimization would get lost if the method got inlined.
+            if (left.Length != right.Length)
+            {
+                return false;
+            }
 
-        public static bool VerifyPassword(string password, string encodedPassword)
-        {
-            return password == DecodeFrom64(encodedPassword);
+            int length = left.Length;
+            int accum = 0;
+
+            for (int i = 0; i < length; i++)
+            {
+                accum |= left[i] - right[i];
+            }
+
+            return accum == 0;
         }
     }
 }

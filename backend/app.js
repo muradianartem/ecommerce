@@ -6,8 +6,11 @@ const GridFsStorage = require('multer-gridfs-storage')
 const Grid = require('gridfs-stream')
 const app = express()
 
+//const connectionStr = "mongodb://localhost:27017/myapp";
+const connectionStr = "mongodb+srv://admin:admin@cluster0.d1cgu.mongodb.net/db?retryWrites=true&w=majority";
+
 let storage = new GridFsStorage({
-  url: "mongodb+srv://admin:admin@cluster0.d1cgu.mongodb.net/db?retryWrites=true&w=majority",
+  url: connectionStr,
   file: (req, file) => {
     return new Promise(
       (resolve, reject) => {
@@ -23,7 +26,7 @@ let storage = new GridFsStorage({
 const upload = multer({ storage });
 
 mongoose.connect(
-  "mongodb+srv://admin:admin@cluster0.d1cgu.mongodb.net/db?retryWrites=true&w=majority",
+  connectionStr,
   {
     useNewUrlParser: true
   });
