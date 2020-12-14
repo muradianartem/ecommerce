@@ -24,8 +24,8 @@ namespace Services
             {
                 throw new BadRequestException("User with this email alredy exists");
             }
-            var encodedPassword = PasswordHasher.EncodePasswordToBase64(model.Password);
-            await _unitOfWork.Users.CreateUserAsync(new User { Email = model.Email, Password = encodedPassword });
+            var passwordHash = PasswordHasher.HashPassword(model.Password);
+            await _unitOfWork.Users.CreateUserAsync(new User { Email = model.Email, Password = passwordHash });
             await _unitOfWork.CommitAsync();
         }
 
@@ -36,7 +36,8 @@ namespace Services
             {
                 throw new NotFoundException("User with this email doesn`t exists"); 
             }
-            if (!PasswordHasher.VerifyPassword(pass, user.Password))
+            var verificationResult = PasswordHasher.VerifyHashedPassword(user.Password, pass);
+            if (verificationResult == PasswordVerificationResult.Failed)
             {
                 throw new InvalidCredsException("Invalid password");
             }
