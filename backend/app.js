@@ -38,7 +38,6 @@ db.once('open', function() {
 
 const Schema = mongoose.Schema;
 
-
 const categorySchema = new Schema({
   title: String,
   content: String,
@@ -47,6 +46,22 @@ const categorySchema = new Schema({
 const Category = mongoose.model('Category', categorySchema);
 
 categorySchema.set('toJSON', {
+  virtuals: true,
+  versionKey:false,
+  transform: function (doc, ret) { delete ret._id  }
+});
+
+const productSchema = new Schema({
+  title: String,
+  content: String,
+  fileName: String,
+  categoryID: String,
+  price: String,
+  properties: {}
+});
+const Product = mongoose.model('Product', productSchema);
+
+productSchema.set('toJSON', {
   virtuals: true,
   versionKey:false,
   transform: function (doc, ret) {   delete ret._id  }
@@ -58,6 +73,28 @@ app.use(express.urlencoded({
 app.use(express.json());
 
 app.use(cors());
+
+app.get("/categories/:id/products", async function(req, res){
+  const list = await Product.find({categoryID: req.params.id});
+  const result = list.filter(x => Contains(x.properties, req.query));
+  res.send(result);
+});
+
+app.get("/categories/:id/attributes", async function(req, res){
+  const list = await Product.find({categoryID: req.params.id});
+  const result = parseAttributes(list);
+  res.send(result);
+});
+
+app.get("/products", async function(req, res){
+  const list = await Product.find({ properties: req.query});
+  res.send(list);
+});
+
+app.post("/products", async function(req, res){
+  const record = await Product.create(req.body);
+  res.send(record);
+});
 
 app.get("/categories", async function(req, res){
   const list = await Category.find();
@@ -106,5 +143,34 @@ app.get('/image/:filename', (req, res) => {
     }
   })
 })
+
+function parseAttributes(list) {
+  const result = {};
+
+  list.forEach(item => {
+    const properties = item.properties;
+    Object.keys(properties).forEach(function(key) {
+      if (!result[key]) {
+        result[key] = [properties[key]];
+      } else {
+        if(!result[key].includes(properties[key])) {
+          result[key].push(properties[key]);
+        }
+      }
+    })
+  })
+
+  return result;
+}
+
+function Contains(target, source) {
+  var contains = true;
+  Object.keys(source).forEach(key => {
+    if(target[key] !== source[key]) {
+      contains = false;
+    }
+  })
+  return contains;
+}
 
 app.listen(3001);
