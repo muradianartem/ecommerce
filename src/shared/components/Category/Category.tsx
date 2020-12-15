@@ -55,7 +55,7 @@ const Category: React.FC<CategoryProps> = ({ title, content, classes, fileName, 
   return (
     <MuiCard raised className={classes.root} onClick={withLink ? handleChooseCategory : null}>
       <MuiCardHeader title={title} />
-      <MuiCardMedia className={classes.media} image={img} title={title} />
+      {img && <MuiCardMedia className={classes.media} image={img} title={title} />}
       <MuiCardContent>
         <Typography variant="body2" color="textSecondary" component="p">
           {content}

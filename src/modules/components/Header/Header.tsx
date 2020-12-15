@@ -33,11 +33,11 @@ const Header: React.FC<HeaderProps> = ({ classes, isLogged }) => {
   const onSubmitForm = (e) => {
     e.preventDefault();
     const { email, password } = e.target;
-    
+
     handleLogin(email.value, password.value);
   };
 
-  const handleLogin = async(email: string, password: string) => {
+  const handleLogin = async (email: string, password: string) => {
     let message = "";
 
     try {
@@ -46,21 +46,22 @@ const Header: React.FC<HeaderProps> = ({ classes, isLogged }) => {
       setLoggedIn(true);
       message = "You are logged in, success!";
     } catch (err) {
-      message= err.response.data.Error;
+      message = err.response.data.Error;
     }
 
     alert(message);
-  }
+  };
 
   const body = (
     <form noValidate onSubmit={onSubmitForm} className={classes.paper}>
       <TextField id="email" label="Email" />
-      <TextField id="password" label="Password"  />
-      <Button type="submit" className={classes.submitBtn}> Submit </Button>
+      <TextField id="password" label="Password" />
+      <Button type="submit" className={classes.submitBtn}>
+        Submit
+      </Button>
     </form>
   );
 
-  
   return (
     <Grid container justify="space-between" alignItems="center" className={classes.root}>
       <Link to="/" className={classes.spaces}>
@@ -81,21 +82,21 @@ const Header: React.FC<HeaderProps> = ({ classes, isLogged }) => {
       </Flex>
       <Flex item alignItems="center">
         <ShoppingCartIcon className={classes.spaces} />
-        {!isLogged && <Flex alignItems="center">Hello{!loggedIn && (
-          <div>
-            <Button onClick={handleOpen} className={classes.signInBtn}>
-              Sign in
-            </Button>
-            <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="simple-modal-title"
-              aria-describedby="simple-modal-description"
-            >
-              {body}
-            </Modal>
-        </div>
-        )}</Flex>}
+        {!isLogged && (
+          <Flex alignItems="center">
+            Hello
+            {!loggedIn && (
+              <div>
+                <Button onClick={handleOpen} className={classes.signInBtn}>
+                  Sign in
+                </Button>
+                <Modal open={open} onClose={handleClose}>
+                  {body}
+                </Modal>
+              </div>
+            )}
+          </Flex>
+        )}
       </Flex>
     </Grid>
   );

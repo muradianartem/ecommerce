@@ -8,8 +8,8 @@ export default function styles({ spacing, palette: { colors } }: Theme) {
       color: colors.secondary
     },
     description: {
-      display: 'flex',
-      flexDirection: 'column',
+      display: "flex",
+      flexDirection: "column",
       flexGrow: 1,
       padding: spacing(4)
     },

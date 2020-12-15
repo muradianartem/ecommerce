@@ -11,14 +11,14 @@ export default function styles({ spacing, palette: { colors } }: Theme) {
       marginRight: spacing()
     },
     paper: {
-      position: 'absolute',
+      position: "absolute",
       right: 20,
       top: 50,
       width: 400,
       display: "flex",
       flexDirection: "column",
       backgroundColor: colors.white,
-      padding: spacing(2, 4, 3),
+      padding: spacing(2, 4, 3)
     },
     submitBtn: {
       marginTop: spacing(2)

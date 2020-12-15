@@ -84,7 +84,9 @@ const ListItems: React.FC<ListItemsProps> = ({ classes }) => {
       </Flex>
       <Flex>
         {list &&
-          list.map(({ id, title, content, fileName }) => <Category withLink key={id} id={id} title={title} content={content} fileName={fileName} link="products" />)}
+          list.map(({ id, title, content, fileName }) => (
+            <Category withLink key={id} id={id} title={title} content={content} fileName={fileName} link="products" />
+          ))}
       </Flex>
     </Flex>
   );

@@ -19,7 +19,7 @@ interface ProductInterface {
   content: string;
   price: string;
   properties: {
-    [key: string]: any;
+    [key: string]: string;
   };
   description: string;
   fileName: string;
@@ -47,18 +47,19 @@ const Product: React.FC<ProductProps> = ({ classes }) => {
     setImg(img);
   };
 
-  const getProduct = async () => {
-    const { data } = await axios.get<ProductInterface>(`http://localhost:3001/products/${productId}`);
-
-    setProduct(data);
-    getImage(data.fileName);
-  };
-
   React.useEffect(() => {
+    const getProduct = async () => {
+      const { data } = await axios.get<ProductInterface>(`http://localhost:3001/products/${productId}`);
+
+      setProduct(data);
+      getImage(data.fileName);
+    };
+
     getProduct();
-  }, []);
+  }, [productId]);
 
   const handleBuy = () => {
+    console.log("have to be checkouted");
   };
 
   return (
@@ -79,7 +80,9 @@ const Product: React.FC<ProductProps> = ({ classes }) => {
               </Flex>
             ))}
             <Typography className={classes.price}>Price: {product.price}</Typography>
-            <Button onClick={handleBuy} color="secondary">Buy</Button>
+            <Button onClick={handleBuy} color="secondary">
+              Buy
+            </Button>
           </Paper>
         </>
       )}
