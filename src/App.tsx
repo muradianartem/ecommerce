@@ -19,7 +19,7 @@ const App = () => {
       <Switch>
         <Route exact path="/categories" component={Categories} />
         <Route exact path="/categories/:categoryId" component={ListItems} />
-        <Route exact path="/categories/:categoryId/product/:productId" component={Product} />
+        <Route exact path="/products/:productId" component={Product} />
         <Route exact path="/contacts" component={Contact} />
         <Redirect to="/categories" />
       </Switch>

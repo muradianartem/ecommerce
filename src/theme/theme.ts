@@ -5,7 +5,8 @@ export const colors = {
   secondary: "#373633",
   red: "#DA291C",
   warning: "#FFC107",
-  white: "#EEEEEE"
+  white: "#EEEEEE",
+  blue: "#00AAAA"
 };
 
 export default createMuiTheme({
