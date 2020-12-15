@@ -94,6 +94,11 @@ app.get("/products", async function(req, res){
   res.send(list);
 });
 
+app.get("/products/:id/", async function(req, res){
+  const product = await Product.findById(req.params.id);
+  res.send(product);
+});
+
 app.post("/products", async function(req, res){
   const record = await Product.create(req.body);
   res.send(record);

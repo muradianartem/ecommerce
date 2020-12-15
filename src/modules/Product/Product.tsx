@@ -30,7 +30,6 @@ const Product: React.FC<ProductProps> = ({ classes }) => {
   }, []);
 
   const handleBuy = () => {
-    console.log("hui");
   };
 
   return (
