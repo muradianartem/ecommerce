@@ -32,21 +32,21 @@ const Header: React.FC<HeaderProps> = ({ classes, isLogged }) => {
 
   const onSubmitForm = (e) => {
     e.preventDefault();
-    const { login, password } = e.target;
+    const { email, password } = e.target;
     
-    handleLogin(login.value, password.value);
+    handleLogin(email.value, password.value);
   };
 
-  const handleLogin = async(login: string, password: string) => {
+  const handleLogin = async(email: string, password: string) => {
     let message = "";
 
     try {
-      await axios.get(`https://localhost:44368/api/users?login=${login}&password=${password}`);
+      await axios.get(`https://localhost:44368/api/users?email=${email}&password=${password}`);
 
       setLoggedIn(true);
-      message = "You are logged in, success!"
-    } catch {
-      message = "you are wrong, no success!"
+      message = "You are logged in, success!";
+    } catch (err) {
+      message= err.response.data.Error;
     }
 
     alert(message);
@@ -54,7 +54,7 @@ const Header: React.FC<HeaderProps> = ({ classes, isLogged }) => {
 
   const body = (
     <form noValidate onSubmit={onSubmitForm} className={classes.paper}>
-      <TextField id="login" label="Login" />
+      <TextField id="email" label="Email" />
       <TextField id="password" label="Password"  />
       <Button type="submit" className={classes.submitBtn}> Submit </Button>
     </form>
