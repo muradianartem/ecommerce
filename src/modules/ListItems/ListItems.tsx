@@ -23,7 +23,7 @@ const ListItems: React.FC<ListItemsProps> = ({ classes }) => {
   const history = useHistory();
 
   const getProducts = async () => {
-    const list = await axios.get(`http://localhost:3001${location.pathname}/products${query}`);
+    const list = await axios.get(`http://localhost:3001${location.pathname}/products?${query}`);
 
     setList(list.data);
   };
