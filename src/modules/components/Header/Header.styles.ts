@@ -22,6 +22,9 @@ export default function styles({ spacing, palette: { colors } }: Theme) {
     },
     submitBtn: {
       marginTop: spacing(2)
+    },
+    signInBtn: {
+      color: colors.white
     }
   });
 }

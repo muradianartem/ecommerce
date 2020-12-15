@@ -81,11 +81,11 @@ const Header: React.FC<HeaderProps> = ({ classes, isLogged }) => {
       </Flex>
       <Flex item alignItems="center">
         <ShoppingCartIcon className={classes.spaces} />
-        {!isLogged && <Flex>Hello{!loggedIn && (
+        {!isLogged && <Flex alignItems="center">Hello{!loggedIn && (
           <div>
-            <button type="button" onClick={handleOpen}>
-              Open Modal
-            </button>
+            <Button onClick={handleOpen} className={classes.signInBtn}>
+              Sign in
+            </Button>
             <Modal
               open={open}
               onClose={handleClose}

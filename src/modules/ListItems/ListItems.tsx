@@ -70,11 +70,11 @@ const ListItems: React.FC<ListItemsProps> = ({ classes }) => {
         {attributes &&
           Object.keys(attributes).map((attribute) => (
             <div key={attribute}>
-              {attribute}
+              <div className={classes.attrTitle}>{attribute}</div>
               <div>
                 {attributes[attribute].map((value) => (
                   <div className={classes.attributeItem} key={value}>
-                    <Checkbox onChange={() => handleAddAttribute(`${attribute}=${value}`)} />
+                    <Checkbox disableRipple size="small" onChange={() => handleAddAttribute(`${attribute}=${value}`)} />
                     {value}
                   </div>
                 ))}

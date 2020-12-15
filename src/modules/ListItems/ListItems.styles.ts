@@ -9,6 +9,11 @@ export default function styles({ spacing }: Theme) {
     },
     attributeItem: {
       width: "100%"
+    },
+    attrTitle: {
+      width: "100%",
+      textAlign: "center",
+      marginTop: spacing(3)
     }
   });
 }
